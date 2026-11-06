@@ -1,3 +1,28 @@
+# `reflex-tool` - a tool for collecting reflection information from C++ code
+
+`reflex-tool` is based on Clang LibTooling.  
+The tool's source code is located in [./clang-tools-extra/reflex-tool](./clang-tools-extra/reflex-tool).
+
+## Building and installing
+
+```shell
+# Configure
+cmake -S ./llvm -B <build-dir> -D CMAKE_INSTALL_PREFIX=<install-prefix> \
+      -D LLVM_ENABLE_PROJECTS="clang;clang-tools-extra" \
+      -D CMAKE_BUILD_TYPE=Release
+# Build
+cmake --build <build-dir> --target reflex-tool clang-resource-headers
+# Install tool and the ReflexTool CMake module
+cmake --build <build-dir> --target install-reflex-tool install-clang-resource-headers install-reflex-tool-cmake
+# Install CMake config file
+cmake --build <build-dir> --target install-reflex-tool-config-cmake
+```
+
+## License
+
+`reflex-tool` is licensed under the Apache License 2.0.  
+See https://www.apache.org/licenses/LICENSE-2.0.txt for license information.
+
 # The LLVM Compiler Infrastructure
 
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/llvm/llvm-project/badge)](https://securityscorecards.dev/viewer/?uri=github.com/llvm/llvm-project)

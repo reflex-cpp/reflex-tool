@@ -12535,4 +12535,12 @@ def err_acc_loop_spec_conflict
 // AMDGCN builtins diagnostics
 def err_amdgcn_global_load_lds_size_invalid_value : Error<"invalid size value">;
 def note_amdgcn_global_load_lds_size_valid_value : Note<"size must be 1, 2, or 4">;
+
+// reflex-tool attribute diagnostics
+def err_reflex_prop_is_not_constant_expression : Error<
+  "[[reflex::prop(...)]] requires that all arguments are constant expressions">;
+def err_reflex_prop_has_value_dependency : Error<
+  "[[reflex::prop(...)]] requires that neither of arguments has value dependency">;
+def note_subexpression_that_caused_the_error : Note<"the subexpression that caused the error">;
+
 } // end of sema component.

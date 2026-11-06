@@ -43,6 +43,8 @@ if (CLANG_ENABLE_CLANGD)
   add_subdirectory(clangd)
 endif()
 
+add_subdirectory(reflex-tool)
+
 # Add the common testsuite after all the tools.
 if(CLANG_INCLUDE_TESTS)
   add_subdirectory(test)

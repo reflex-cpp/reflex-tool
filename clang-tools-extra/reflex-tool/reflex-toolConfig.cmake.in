@@ -1,0 +1,13 @@
+@PACKAGE_INIT@
+
+set(REFLEX_TOOL_PROGRAM "${CMAKE_CURRENT_LIST_DIR}/../../../bin/reflex-tool${CMAKE_EXECUTABLE_SUFFIX}")
+if (NOT EXISTS "${REFLEX_TOOL_PROGRAM}")
+  message(FATAL_ERROR "\"${REFLEX_TOOL_PROGRAM}\" does not exist")
+endif ()
+add_executable(reflex::tool IMPORTED)
+set_target_properties(reflex::tool PROPERTIES IMPORTED_LOCATION "${REFLEX_TOOL_PROGRAM}")
+unset(REFLEX_TOOL_PROGRAM)
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
+
+check_required_components(reflex-tool)

@@ -6212,6 +6212,35 @@ static void handleVTablePointerAuthentication(Sema &S, Decl *D,
       CustomDiscriminationValue));
 }
 
+void handleReflexPropAttr(Sema &S, Decl *const D, const ParsedAttr &AL) {
+  auto Props = SmallVector<Expr *, 2>{};
+  for (auto ArgIdx = 0U; ArgIdx != AL.getNumArgs(); ++ArgIdx) {
+    assert(AL.isArgExpr(ArgIdx));
+    auto &ArgExpr = *AL.getArgAsExpr(ArgIdx);
+    auto ErrorLocation = SourceLocation{};
+
+    if (ArgExpr.isValueDependent()) {
+      S.Diag(AL.getLoc(), diag::err_reflex_prop_has_value_dependency)
+          << AL;
+      S.Diag(ErrorLocation, diag::note_subexpression_that_caused_the_error)
+          << ErrorLocation;
+      continue;
+    }
+
+    if (!ArgExpr.isCXX11ConstantExpr(S.getASTContext(), nullptr,
+                                     &ErrorLocation)) {
+      S.Diag(AL.getLoc(), diag::err_reflex_prop_is_not_constant_expression)
+          << AL;
+      S.Diag(ErrorLocation, diag::note_subexpression_that_caused_the_error)
+          << ErrorLocation;
+      continue;
+    }
+    Props.push_back(&ArgExpr);
+  }
+  D->addAttr(::new (S.Context)
+                 ReflexPropAttr(S.Context, AL, Props.data(), Props.size()));
+}
+
 //===----------------------------------------------------------------------===//
 // Top Level Sema Entry Points
 //===----------------------------------------------------------------------===//
@@ -7100,6 +7129,11 @@ ProcessDeclAttribute(Sema &S, Scope *scope, Decl *D, const ParsedAttr &AL,
   case ParsedAttr::AT_VTablePointerAuthentication:
     handleVTablePointerAuthentication(S, D, AL);
     break;
+
+  // reflex-tool attributes
+  case ParsedAttr::AT_ReflexProp:
+    handleReflexPropAttr(S, D, AL);
+  break;
   }
 }
 

@@ -4719,3 +4719,19 @@ def ClspvLibclcBuiltin: InheritableAttr {
   let Documentation = [ClspvLibclcBuiltinDoc];
   let SimpleHandler = 1;
 }
+
+// reflex-tool attributes
+
+def ReflexReflect : InheritableAttr {
+  let Spellings = [CXX11<"reflex", "reflect">];
+  let Subjects = SubjectList<[Enum, Record, Function, TypedefName]>;
+  let Documentation = [Undocumented];
+  let SimpleHandler = 1;
+}
+
+def ReflexProp : InheritableAttr {
+  let Spellings = [CXX11<"reflex", "prop">];
+  let Subjects = SubjectList<[Enum, EnumConstant, Record, Field, Var, TypedefName]>;
+  let Args = [VariadicExprArgument<"Properties">];
+  let Documentation = [Undocumented];
+}
