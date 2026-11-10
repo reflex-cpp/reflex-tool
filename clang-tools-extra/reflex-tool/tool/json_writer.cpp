@@ -91,6 +91,12 @@ void serializeTemplateSpecializationInfo(llvm::json::OStream &JOS, const Templat
           JOS.attributeObject("integral", [&] {
             JOS.attribute("value", Argument.IntegralValue.value());
           });
+
+          assert(Argument.Type.has_value());
+          JOS.attributeObject("type", [&]
+          {
+            serializeTypeInfo(JOS, Argument.Type.value());
+          });
         } else if (Argument.Kind == clang::TemplateArgument::Expression) {
           // write nothng for now
         } else {

@@ -239,7 +239,10 @@ TemplateArgumentInfo getTemplateArgInfo(
     const auto Value = TemplateArg.getAsIntegral();
 
     return TemplateArgumentInfo{
-        .Kind = Kind, .IntegralValue = Value.getExtValue()};
+      .Kind = Kind,
+      .IntegralValue = Value.getExtValue(),
+      .Type = getTypeInfo(TemplateArg.getIntegralType(), AstContext)
+    };
   }
   if (Kind == clang::TemplateArgument::ArgKind::Expression) {
     auto *const Expr = TemplateArg.getAsExpr();
@@ -253,14 +256,17 @@ TemplateArgumentInfo getTemplateArgInfo(
     if (EnumDecl) {
       return TemplateArgumentInfo{
         .Kind = clang::TemplateArgument::ArgKind::Integral,
-        .IntegralValue = EnumDecl->getInitVal().getExtValue()};
+        .IntegralValue = EnumDecl->getInitVal().getExtValue(),
+        .Type = getTypeInfo(Expr->getType(), AstContext)
+      };
     }
 
     const auto ConstExpr = Expr->getIntegerConstantExpr(AstContext);
     if (ConstExpr.has_value()) {
       return TemplateArgumentInfo{
           .Kind = clang::TemplateArgument::ArgKind::Integral,
-          .IntegralValue = ConstExpr->getExtValue()};
+          .IntegralValue = ConstExpr->getExtValue(),
+          .Type = getTypeInfo(Expr->getType(), AstContext)};
     }
     Expr->dumpColor();
     llvm::errs() << "Non-numeric or  non-constexpr expressions in template "
